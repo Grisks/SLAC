@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-FILE_PATH = "./OscopeOut/TestTrace"
-NUM_CSVS = 10
+FILE_PATH = "./OscopeOut/TestRun1/Test_"
+NUM_CSVS = 1000
 
 
 def parse_csv(file):
@@ -40,4 +40,5 @@ if __name__ == "__main__":
     #plot_count([one[0]*10**9,one[1]], )
     avv = make_averages()
     avv[0] = avv[0] * 10**9
+    avv[1] *= 10**3
     plot_count(avv, "Averaged voltage over 10 different Dark counts in PMT")
