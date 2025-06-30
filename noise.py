@@ -23,9 +23,8 @@ def fitNoise(values):
     #pdf = 1 / (stddev * sqrt(2*pi)) * np.exp((-1/2)*(((x-mean)/stddev)**2))
     pdf = [gaussian(x[i],1  / (stddev * sqrt(2*pi)),mean,stddev) for i in range(len(x))]
 
-    print(f"Mean: {mean}, Standard Deviation: {stddev}")
-
     hist_data = plt.hist(comb_data, 15, density=True)
+    plt.close()
     return (mean, stddev, hist_data)
 
 def evaluateFit(hist_data, mean, stddev):
