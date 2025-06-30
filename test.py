@@ -5,7 +5,7 @@ import time
 
 scope = koa.oscilloscope.Oscilloscope(address='USB0::10893::6006::MY58262555::INSTR', )
 scope.savepng = False
-for i in range(10):
+for i in range(1000):
     scope.set_options_get_trace(num_points=1000)
-    scope.save_trace(f"./OscopeOut/TestTrace3_{i}", ext=".csv")
+    scope.save_trace(f"./OscopeOut/TestRun1/Test_{i}", ext=".csv")
     time.sleep(0.0001)
