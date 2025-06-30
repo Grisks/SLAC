@@ -78,8 +78,10 @@ if __name__ == "__main__":
     average = make_averages()
     average[0]*= 10**9
     average[1]*= 10**3
-    plt.figure(figsize=(10,8))
     fig, axs = plt.subplots(1, 2, sharey=False, tight_layout=True)
+    fig.set_figheight(8)
+    fig.set_figwidth(10)
+
     num_out = 0
     for i in range(1000):
         if(fwhm[i] > 5):
