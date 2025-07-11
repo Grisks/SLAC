@@ -2,4 +2,7 @@
 *.png
 *csv
 __pycache__
+OscopeOut
+.DS_Store
+figures
 *.zip
