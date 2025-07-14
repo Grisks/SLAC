@@ -38,7 +38,7 @@ def evaluateFit(hist_data, mean, stddev):
 
 
 
-def save_noise(file_suffix):
+def save_noise(file_prefix, file_suffix):
     values = get_values_mv_ns(NUM_CSVS)
     mean, stddev, __, comb_data = fitNoise(values)
 
@@ -54,10 +54,10 @@ def save_noise(file_suffix):
     plt.ylabel("Noise readings at level")
 
     plt.plot(x,y)
-    if file_suffix != "":
-        plt.savefig(f"./figures/Noise_{file_suffix}")
+    if file_suffix != "" and file_prefix != "":
+        plt.savefig(f"{file_prefix}/Noise_{file_suffix}")
 
     plt.show()
 
 if __name__ == "__main__":
-    save_noise("")
+    save_noise("", "")

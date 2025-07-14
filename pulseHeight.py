@@ -9,7 +9,7 @@ from math import pi, sqrt
 MINVALUE = 0
 MAXVALUE = 1000
 
-def save_pulse_heights(file_suffix):
+def save_pulse_heights(file_prefix, file_suffix):
     values = get_values_mv_ns(NUM_CSVS)
     
     numMatches = 0
@@ -44,10 +44,10 @@ def save_pulse_heights(file_suffix):
     plt.title(f"Pulse height count with {NUM_CSVS} counts on PMT {PMT_NAME}")
     plt.xlabel("Max height of pulse (mV)")
     plt.ylabel("Number of Pulses")
-    if file_suffix != "":
-        plt.savefig(f"./figures/PulseHeight_{file_suffix}")
+    if file_suffix != "" and file_prefix != "":
+        plt.savefig(f"{file_prefix}/PulseHeight_{file_suffix}")
 
     plt.show()
 
 if __name__ == "__main__":
-    save_pulse_heights("")
+    save_pulse_heights("", "")

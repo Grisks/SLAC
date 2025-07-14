@@ -72,7 +72,7 @@ def findFwhm(values, numcsvs):
         print(fwhm[i])
     return (fwhm, times)
 
-def save_integration(file_suffix):
+def save_integration( file_prefix, file_suffix):
     values = get_values_mv_ns(2500)
 
     average = make_averages()
@@ -89,10 +89,10 @@ def save_integration(file_suffix):
     plt.title(f"Pulse area with {NUM_CSVS} counts for PMT {PMT_NAME}")
     plt.xlabel("Pulse Area (mVns)")
     plt.ylabel("Counts")
-    if file_suffix != "":
-        plt.savefig(f"figures/Integration_{file_suffix}")
+    if file_suffix != "" and file_prefix != "":
+        plt.savefig(f"{file_prefix}/Integration_{file_suffix}")
 
     plt.show()
 
 if __name__ == "__main__":
-    save_integration("")
+    save_integration("","")

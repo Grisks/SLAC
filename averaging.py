@@ -3,19 +3,19 @@ import numpy as np
 import pandas as pd
 import random
 
-FILE_PATH = "./OscopeOut/PMT_1_OnLED850/Test_"
-PMT_NAME = "LV2472"
+FILE_PATH = "./OscopeOut/Test_OnLED/Test_"
+PMT_NAME = "TEST"
 NUM_CSVS = 2500
-FILE_LEN = 1000
+FILE_LEN = 625
 SELF_TRIG = False
 MIN_VALUE = 5
-VOLTAGE = 850
+VOLTAGE = 800
 
 def parse_csv(file):
     v = pd.read_csv(file, sep=',', header=3)
     if(not SELF_TRIG):
-        return np.array([v["# time"].tolist(), v['3'].tolist(), v['1'].tolist()])
-    return np.array([v["# time"].tolist(), v['3'].tolist()])
+        return np.array([v["# time"].tolist(), v['2'].tolist(), v['1'].tolist()])
+    return np.array([v["# time"].tolist(), v['2'].tolist()])
 
 def make_averages():
     arr = []
