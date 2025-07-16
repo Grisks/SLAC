@@ -40,12 +40,16 @@ def evaluateFit(hist_data, mean, stddev):
 
 def save_noise(file_prefix, file_suffix):
     values = get_values_mv_ns(NUM_CSVS)
-    mean, stddev, __, comb_data = fitNoise(values)
+    mean, stddev, hist_data, comb_data = fitNoise(values)
+
+    popt, perr = evaluateFit(hist_data, mean, stddev)
 
     x = np.linspace(-4*stddev+mean,4*stddev+mean)
     y = gaussian(x, 1  / (stddev * sqrt(2*pi)), mean, stddev)
 
     plt.figure(figsize=(10,8))
+
+    print(f"Mean {popt[1]}+-{perr[1]}, Stddev: {popt[2]}+-{perr[2]}")
 
     plt.hist(comb_data, 10, density=True)
     plt.title(f"Noise levels across {NUM_CSVS} counts from PMT {PMT_NAME}")

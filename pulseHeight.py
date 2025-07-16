@@ -1,5 +1,5 @@
 from integration import get_values_mv_ns
-from averaging import NUM_CSVS, PMT_NAME, SELF_TRIG
+from averaging import NUM_CSVS, PMT_NAME, SELF_TRIG, FILE_PATH
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
@@ -9,8 +9,15 @@ from math import pi, sqrt
 MINVALUE = 0
 MAXVALUE = 1000
 
-def save_pulse_heights(file_prefix, file_suffix):
-    values = get_values_mv_ns(NUM_CSVS)
+def show_all_pulse_heights():
+    filePaths = ["./OscopeOut/PMT_1_OnLED850/Test_","./OscopeOut/PMT_1_OnLED800/Test_", "./OscopeOut/PMT_1_OnLED760/Test_","./OscopeOut/PMT_1_OnLED730/Test_","./OscopeOut/PMT_1_OnLED700/Test_"]
+
+    for file in filePaths:
+        save_pulse_heights("","", FileName=file)
+    plt.show()
+
+def save_pulse_heights(file_prefix, file_suffix, FileName=FILE_PATH):
+    values = get_values_mv_ns(NUM_CSVS, file=FileName)
     
     numMatches = 0
     for i in range(NUM_CSVS):
@@ -40,14 +47,16 @@ def save_pulse_heights(file_prefix, file_suffix):
     
     #plt.plot(x,y)
 
-    plt.hist(maxes, 50, density=False)
+    plt.hist(maxes, 50, density=False, label=FileName,range=(0,30))
     plt.title(f"Pulse height count with {NUM_CSVS} counts on PMT {PMT_NAME}")
+    plt.legend()
     plt.xlabel("Max height of pulse (mV)")
     plt.ylabel("Number of Pulses")
     if file_suffix != "" and file_prefix != "":
         plt.savefig(f"{file_prefix}/PulseHeight_{file_suffix}")
 
-    plt.show()
 
 if __name__ == "__main__":
-    save_pulse_heights("", "")
+    save_pulse_heights("", "", FILE_PATH)
+    #show_all_pulse_heights()
+    plt.show()

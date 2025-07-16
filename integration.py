@@ -7,10 +7,10 @@ from trimValues import trimValues
 
 
 
-def get_values_mv_ns(num_csvs):
+def get_values_mv_ns(num_csvs, file=FILE_PATH):
     arr = np.zeros((num_csvs,2,FILE_LEN))
     for i in range(num_csvs):
-        arr[i] = parse_csv(f"{FILE_PATH}{i}.csv")[:2]
+        arr[i] = parse_csv(f"{file}{i}.csv")[:2]
         arr[i][0]*=10**9
         arr[i][1]*=10**3
     return arr
