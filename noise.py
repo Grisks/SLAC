@@ -3,10 +3,18 @@ import matplotlib.pyplot as plt
 from scipy.stats import norm, chisquare
 from scipy.optimize import curve_fit
 from integration import get_values_mv_ns
-from averaging import NUM_CSVS, PMT_NAME, SELF_TRIG
+from averaging import NUM_CSVS, PMT_NAME, SELF_TRIG, FILE_PATH
 from math import pi, sqrt
 
 NOISE_DEPTH = 100
+
+def show_all_noise():
+    filePaths = ["./OscopeOut/PMT_3_850/Test_","./OscopeOut/PMT_3_800/Test_", "./OscopeOut/PMT_3_750/Test_","./OscopeOut/PMT_3_700/Test_","./OscopeOut/PMT_3_650/Test_","./OscopeOut/PMT_3_600/Test_"]
+
+    for file in filePaths:
+        save_noise("","", FileName=file)
+    plt.savefig("./figures/LV2464/Noise")
+    plt.show()
 
 def gaussian(x, amplitude, mean, sigma):
     return amplitude * np.exp(-(x - mean)**2 / (2 * sigma**2))
@@ -38,8 +46,8 @@ def evaluateFit(hist_data, mean, stddev):
 
 
 
-def save_noise(file_prefix, file_suffix):
-    values = get_values_mv_ns(NUM_CSVS)
+def save_noise(file_prefix, file_suffix, FileName=FILE_PATH):
+    values = get_values_mv_ns(NUM_CSVS, file=FileName)
     mean, stddev, hist_data, comb_data = fitNoise(values)
 
     popt, perr = evaluateFit(hist_data, mean, stddev)
@@ -60,8 +68,8 @@ def save_noise(file_prefix, file_suffix):
     plt.plot(x,y)
     if file_suffix != "" and file_prefix != "":
         plt.savefig(f"{file_prefix}/Noise_{file_suffix}")
-
     plt.show()
 
+
 if __name__ == "__main__":
-    save_noise("", "")
+    show_all_noise()

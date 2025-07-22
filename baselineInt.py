@@ -8,7 +8,7 @@ from noise import findNoise, gaussian
 from trimValues import trimValues
 
 BASELINE_MULT = 3
-MIN_VAL = 5
+MIN_VAL = 4
 
 def baseLineInt(val):
     values = trimValues(val,MIN_VAL)[0]
@@ -33,8 +33,9 @@ def show_all():
 
     for file in filePaths:
         values = get_values_mv_ns(NUM_CSVS, file=file)
-        plt.hist(baseLineInt(values),50, label=file)
+        plt.hist(baseLineInt(values),100, label=file, range=(0,400))
         plt.legend()
+    plt.savefig("PMT_1_Integration")
     plt.show()    
 
 def save_baseline(file_prefix, file_suffix):
@@ -70,5 +71,5 @@ def save_baseline(file_prefix, file_suffix):
 
 
 if __name__ == "__main__":
-    save_baseline("", "")
-    #show_all()
+    #save_baseline("", "")
+    show_all()

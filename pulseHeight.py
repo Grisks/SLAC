@@ -11,9 +11,9 @@ MAXVALUE = 1000
 
 def show_all_pulse_heights():
     filePaths = ["./OscopeOut/PMT_1_OnLED850/Test_","./OscopeOut/PMT_1_OnLED800/Test_", "./OscopeOut/PMT_1_OnLED760/Test_","./OscopeOut/PMT_1_OnLED730/Test_","./OscopeOut/PMT_1_OnLED700/Test_"]
-
     for file in filePaths:
         save_pulse_heights("","", FileName=file)
+    plt.savefig("./figures/LV2472/Heights")
     plt.show()
 
 def save_pulse_heights(file_prefix, file_suffix, FileName=FILE_PATH):
