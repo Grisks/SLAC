@@ -3,13 +3,13 @@ import numpy as np
 import pandas as pd
 import random
 
-FILE_PATH = "./OscopeOut/PMT_6_850/Test_"
-PMT_NAME = "LV2457"
+FILE_PATH = "./OscopeOut/PMT_9_800_L/Test_"
+PMT_NAME = "LV2477"
 NUM_CSVS = 2500
 FILE_LEN = 1000
 SELF_TRIG = False
 MIN_VALUE = 0
-VOLTAGE = 850
+VOLTAGE = 800
 
 def parse_csv(file):
     v = pd.read_csv(file, sep=',', header=3)

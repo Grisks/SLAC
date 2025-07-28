@@ -40,7 +40,7 @@ def evaluateFit(hist_data, mean, stddev):
 
     print(f"ChiSquare stat: {goodness}, p_value: {p_value}")
 
-    popt, pcov = curve_fit(gaussian, [(hist_data[1][i]+hist_data[1][i+1])/2 for i in range(15)], hist_data[0], bounds=([1  / (stddev * sqrt(2*pi))-0.001,-10,0],[1  / (stddev * sqrt(2*pi)),10,2]))
+    popt, pcov = curve_fit(gaussian, [(hist_data[1][i]+hist_data[1][i+1])/2 for i in range(15)], hist_data[0], bounds=([1  / (stddev * sqrt(2*pi))-0.1,-30,-np.inf],[1  / (stddev * sqrt(2*pi))+0.1,30,np.inf]))
     perr = np.sqrt(np.diag(pcov))
     return popt, perr
 
@@ -51,6 +51,9 @@ def save_noise(file_prefix, file_suffix, FileName=FILE_PATH):
     mean, stddev, hist_data, comb_data = fitNoise(values)
 
     popt, perr = evaluateFit(hist_data, mean, stddev)
+
+    popt = np.round(popt,3)
+    perr = np.round(perr, 3)
 
     x = np.linspace(-4*stddev+mean,4*stddev+mean)
     y = gaussian(x, 1  / (stddev * sqrt(2*pi)), mean, stddev)
@@ -65,10 +68,12 @@ def save_noise(file_prefix, file_suffix, FileName=FILE_PATH):
     plt.xlabel("Noise level (mv)")
     plt.ylabel("Noise readings at level")
 
+    plt.text(1.5,.6,f"Mean {popt[1]}+-{perr[1]}")
+    plt.text(1.5,.45,f"Stddev: {popt[2]}+-{perr[2]}")
+
     plt.plot(x,y)
     if file_suffix != "" and file_prefix != "":
         plt.savefig(f"{file_prefix}/Noise_{file_suffix}")
-    plt.show()
 
 
 if __name__ == "__main__":

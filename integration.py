@@ -1,11 +1,15 @@
 from scipy import integrate, interpolate
+from scipy.stats import norm
+from scipy.optimize import curve_fit
 from averaging import make_averages, parse_csv, FILE_PATH, FILE_LEN, NUM_CSVS, PMT_NAME, SELF_TRIG
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+
 from trimValues import trimValues
 
-
+def gaussian(x, amplitude, mean, sigma):
+    return amplitude * np.exp(-(x - mean)**2 / (2 * sigma**2))
 
 def get_values_mv_ns(num_csvs, file=FILE_PATH):
     arr = np.zeros((num_csvs,2,FILE_LEN))
@@ -15,7 +19,7 @@ def get_values_mv_ns(num_csvs, file=FILE_PATH):
         arr[i][1]*=10**3
     return arr
 
-def integration(values, num_csvs):
+def integration(values, _num_csvs):
     out = np.zeros(len(values))
     for i in range(len(values)):
         out[i] = integrate.simpson(-values[i][1],x=values[i][0])
@@ -72,8 +76,8 @@ def findFwhm(values, numcsvs):
         print(fwhm[i])
     return (fwhm, times)
 
-def save_integration( file_prefix, file_suffix):
-    values = get_values_mv_ns(2500)
+def save_integration( file_prefix, file_suffix, FileName=FILE_PATH):
+    values = get_values_mv_ns(NUM_CSVS, file=FileName)
 
     average = make_averages()
     average[0][0]*= 10**9
@@ -84,7 +88,18 @@ def save_integration( file_prefix, file_suffix):
         #    num_out += 1
         #    fwhm[i] = 5
     #axs[0].hist(fwhm, bins=20)
-    plt.hist(integration(values,1000), bins=100, range=(-50,200))
+    ints = integration(values,2500)
+    
+    mean, stddev = norm.fit(ints)
+    hist_data = plt.hist(ints, bins=100)
+    popt, pcov = curve_fit(gaussian,[hist_data[1][i] for i in range(100)], hist_data[0], p0=(200,mean,stddev))
+
+    perr = np.round(np.sqrt(np.diag(pcov)),2)
+    mean = popt[1]
+    stddev = popt[2]
+
+    plt.text(mean+1.5*stddev, 55, f"Mean: {np.round(mean,2)}+-{np.round(perr[1],2)}")
+    plt.text(mean+1.5*stddev, 45, f"Stddev: {np.round(stddev,2)}+-{np.round(perr[2],2)}")
 
     plt.title(f"Pulse area with {NUM_CSVS} counts for PMT {PMT_NAME}")
     plt.xlabel("Pulse Area (mVns)")

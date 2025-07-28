@@ -10,15 +10,20 @@ import os
 
 
 if __name__ == "__main__":
-    
-    prefix = f"./figures/{PMT_NAME}_{"Self" if SELF_TRIG else "OnLED"}_{VOLTAGE}"
-    try:
-        os.makedirs(prefix)
-    except FileExistsError:
-        print("Directory already exists")
-    suffix = f"{PMT_NAME}_{"Self" if SELF_TRIG else "OnLED"}_{VOLTAGE}"
-    save_noise(prefix, suffix)
-    save_pulse_heights(prefix, suffix)
-    plt.show()
-    save_integration(prefix, suffix)
-    save_baseline(prefix, suffix)
+    Voltages = [700,800,850]
+    Files = ["./OscopeOut/PMT_9_700/Test_", "./OscopeOut/PMT_9_800/Test_", "./OscopeOut/PMT_9_850/Test_"]
+    for i in range(len(Voltages)):
+        prefix = f"./figures/{PMT_NAME}_{"Self" if SELF_TRIG else "OnLED"}_{Voltages[i]}"
+        try:
+            os.makedirs(prefix)
+        except FileExistsError:
+            print("Directory already exists")
+        suffix = f"{PMT_NAME}_{"Self" if SELF_TRIG else "OnLED"}_{Voltages[i]}"
+        #save_noise(prefix, suffix, FileName=Files[i])
+        #plt.close()
+        save_pulse_heights(prefix, suffix, FileName=Files[i])
+        plt.close()
+        save_integration(prefix, suffix, FileName=Files[i])
+        plt.close()
+        save_baseline(prefix, suffix,FileName=Files[i])
+        plt.close()
