@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 from scipy.stats import norm, chisquare
 from scipy.optimize import curve_fit
 from integration import get_values_mv_ns
+from scipy.integrate import simpson
 from averaging import NUM_CSVS, PMT_NAME, SELF_TRIG, FILE_PATH
 from math import pi, sqrt
 
-NOISE_DEPTH = 100
+NOISE_DEPTH = 50
 
 def show_all_noise():
     filePaths = ["./OscopeOut/PMT_3_850/Test_","./OscopeOut/PMT_3_800/Test_", "./OscopeOut/PMT_3_750/Test_","./OscopeOut/PMT_3_700/Test_","./OscopeOut/PMT_3_650/Test_","./OscopeOut/PMT_3_600/Test_"]
@@ -44,11 +45,22 @@ def evaluateFit(hist_data, mean, stddev):
     perr = np.sqrt(np.diag(pcov))
     return popt, perr
 
-
+def get_Area(values):
+    modVals = np.zeros((NUM_CSVS, NOISE_DEPTH))
+    Areas = np.zeros(NUM_CSVS)
+    for i in range(NUM_CSVS):
+        modVals[i] = values[i][1][:NOISE_DEPTH]
+        Areas[i] = simpson(modVals[i], values[i][0][:NOISE_DEPTH])
+    return Areas
+    
 
 def save_noise(file_prefix, file_suffix, FileName=FILE_PATH):
     values = get_values_mv_ns(NUM_CSVS, file=FileName)
     mean, stddev, hist_data, comb_data = fitNoise(values)
+    area = get_Area(values)
+    meanA, stddevA = norm.fit(area)
+
+    print(f"Mean Area: {meanA}, stddev {stddevA}")
 
     popt, perr = evaluateFit(hist_data, mean, stddev)
 
@@ -72,9 +84,20 @@ def save_noise(file_prefix, file_suffix, FileName=FILE_PATH):
     plt.text(1.5,.45,f"Stddev: {popt[2]}+-{perr[2]}")
 
     plt.plot(x,y)
+
     if file_suffix != "" and file_prefix != "":
         plt.savefig(f"{file_prefix}/Noise_{file_suffix}")
 
+    plt.show()
+
+    plt.hist(area)
+    plt.xlabel("Mean Area of Noise (mVns)")
+    plt.ylabel("Number of counts")
+    plt.title("Area of noise before pulse on PMT LV2464")
+    plt.text(meanA+1, 1000, f"Mean Area: {np.round(meanA,2)}, stddev {np.round(stddevA,2)}" )
+    plt.savefig("./NoiseArea")
+    plt.show()
+
 
 if __name__ == "__main__":
-    show_all_noise()
+    save_noise("","")

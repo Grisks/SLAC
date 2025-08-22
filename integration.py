@@ -5,11 +5,26 @@ from averaging import make_averages, parse_csv, FILE_PATH, FILE_LEN, NUM_CSVS, P
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-
 from trimValues import trimValues
+
+NUM_AROUND = 15
 
 def gaussian(x, amplitude, mean, sigma):
     return amplitude * np.exp(-(x - mean)**2 / (2 * sigma**2))
+
+def area_around_pulse(values):
+    areas = np.zeros(len(values))
+
+    for i in range(len(values)):
+        pulseIndex = np.argmax(-values[i][1])
+        if(pulseIndex>100 and pulseIndex<900):
+            areaRange = [pulseIndex-NUM_AROUND*5, pulseIndex+NUM_AROUND*5]
+        elif (pulseIndex <=100):
+            areaRange = [0, pulseIndex+NUM_AROUND*5]
+        elif (pulseIndex >=900):
+            areaRange = [pulseIndex-NUM_AROUND*5, 999]
+        areas[i] = integrate.simpson(-values[i][1][areaRange[0]:areaRange[1]], x=values[i][0][areaRange[0]:areaRange[1]])
+    return areas
 
 def get_values_mv_ns(num_csvs, file=FILE_PATH):
     arr = np.zeros((num_csvs,2,FILE_LEN))
@@ -90,6 +105,8 @@ def save_integration( file_prefix, file_suffix, FileName=FILE_PATH):
     #axs[0].hist(fwhm, bins=20)
     ints = integration(values,2500)
     
+    areas = area_around_pulse(values)
+
     mean, stddev = norm.fit(ints)
     hist_data = plt.hist(ints, bins=100)
     popt, pcov = curve_fit(gaussian,[hist_data[1][i] for i in range(100)], hist_data[0], p0=(200,mean,stddev))
@@ -106,7 +123,13 @@ def save_integration( file_prefix, file_suffix, FileName=FILE_PATH):
     plt.ylabel("Counts")
     if file_suffix != "" and file_prefix != "":
         plt.savefig(f"{file_prefix}/Integration_{file_suffix}")
+    plt.show()
 
+    plt.hist(areas, 40, range=(-5,75))
+    plt.xlabel("Pulse Area (mVns)")
+    plt.ylabel("Counts")
+    plt.title("Pulse area localized to +-15ns around pulse at 800V")
+    plt.savefig("./PulseArea800")
     plt.show()
 
 if __name__ == "__main__":

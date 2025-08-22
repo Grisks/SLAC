@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import random
 
-FILE_PATH = "./OscopeOut/PMT_9_800_L/Test_"
-PMT_NAME = "LV2477"
+FILE_PATH = "./OscopeOut/PMT_18_800/Test_"
+PMT_NAME = "LV2464"
 NUM_CSVS = 2500
 FILE_LEN = 1000
 SELF_TRIG = False
@@ -16,6 +16,8 @@ def parse_csv(file):
     if(not SELF_TRIG):
         return np.array([v["# time"].tolist(), v['3'].tolist(), v['1'].tolist()])
     return np.array([v["# time"].tolist(), v['3'].tolist()])
+
+
 
 def make_averages():
     arr = []
@@ -85,9 +87,13 @@ if __name__ == "__main__":
         plt.xlim(0,sampling_rate/10)
         plt.show()
 
-        plt.plot(arr[i][0]*10**9,arr[i][1]*10**3)
+        plt.plot(arr[i][0]*10**9,arr[i][1]*10**3, label="PMT Pulse")
         if(not SELF_TRIG):
-            plt.plot(arr[i][0]*10**9, (pulses[i]*10)-30)
+            plt.plot(arr[i][0]*10**9, (pulses[i]*10)-25, label="LED Pulse")
+        plt.xlabel("Time (ns)")
+        plt.ylabel("Voltage (mV)")
+        plt.title("Single pulse waveform for LV2464 at 800V")
+        plt.legend()
         plt.show()
         
     plot_count(avv, "Averaged voltage over 2500 different Dark counts in PMT")

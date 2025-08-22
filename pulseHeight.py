@@ -67,7 +67,6 @@ def save_pulse_heights(file_prefix, file_suffix, FileName=FILE_PATH):
     plt.text(mean+1.5*stddev, 110, f"Stddev: {np.round(stddev,2)}")#+-{np.round(perr[2],2)}")
     if file_suffix != "" and file_prefix != "":
         plt.savefig(f"{file_prefix}/PulseHeight_{file_suffix}")
-    plt.show()
 
 
 if __name__ == "__main__":
